@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { connectWallet, getCurrentWalletConnect } from "./utils/interact"
+import { connectWallet, getCurrentWalletConnect, mintNFT } from "./utils/interact"
 
 const Minter = (props) => {
 
@@ -10,10 +10,10 @@ const Minter = (props) => {
   const [description, setDescription] = useState("");
   const [url, setURL] = useState("");
 
-  useEffect(() => { //TODO: implement
+  useEffect(() => {
     const getCurrentWalletConnectEffect = async () => {
       const {address, status} = await getCurrentWalletConnect();
-      setWallet(address)
+      setWallet(address);
       setStatus(status);  
     }
 
@@ -22,14 +22,15 @@ const Minter = (props) => {
     addWalletListener();
   }, []);
 
-  const connectWalletPressed = async () => { //TODO: implement
+  const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
-    setStatus(walletResponse.status)
-    setWallet(walletResponse.address)
+    setStatus(walletResponse.status);
+    setWallet(walletResponse.address);
   };
 
-  const onMintPressed = async () => { //TODO: implement
-    
+  const onMintPressed = async () => {
+    const { status } = await mintNFT(url, name, description);
+    setStatus(status);
   };
 
   function addWalletListener() {
