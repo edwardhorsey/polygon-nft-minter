@@ -6,7 +6,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 
 const contractABI = require('../contract-abi.json')
-const contractAddress = "0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE"; // https://ropsten.etherscan.io/address/0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE#code
+const contractAddress = "0x8dB0faC09587829Dbc7Ae51698891c24f37142E0"; // https://mumbai.polygonscan.com/address/0x8dB0faC09587829Dbc7Ae51698891c24f37142E0#code
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -129,7 +129,7 @@ export const mintNFT = async (url, name, description) => {
 
     return {
       success: true,
-      status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
+      status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash
     }
   } catch(error) {
     return {
