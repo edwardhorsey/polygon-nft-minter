@@ -1,3 +1,4 @@
+import { checkOutPolygonTransaction, CONNECT_TO_METAMASK, EMPTY_FIELDS, INSTALL_METAMASK, showErrorMessage, WRITE_MESSAGE } from '../constants/statusMessages.js';
 import { pinJSONToIPFS } from './pinata.js'
 
 require('dotenv').config();
@@ -6,7 +7,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 
 const contractABI = require('../contract-abi.json')
-const contractAddress = "0x8dB0faC09587829Dbc7Ae51698891c24f37142E0"; // https://mumbai.polygonscan.com/address/0x8dB0faC09587829Dbc7Ae51698891c24f37142E0#code
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS; // https://mumbai.polygonscan.com/address/0x8dB0faC09587829Dbc7Ae51698891c24f37142E0#code
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -14,32 +15,23 @@ export const connectWallet = async () => {
       const addressArray = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
+
       const obj = {
-        status: "👆🏽 Write a message in the text-field above.",
+        status: WRITE_MESSAGE,
         address: addressArray[0],
       };
+
       return obj;
     } catch (err) {
       return {
         address: "",
-        status: "😥 " + err.message,
+        status: showErrorMessage(err.message),
       };
     }
   } else {
     return {
       address: "",
-      status: (
-        <span>
-          <p>
-            {" "}
-            🦊{" "}
-            <a target="_blank" rel="noreferrer" href={`https://metamask.io/download.html`}>
-              You must install Metamask, a virtual Ethereum wallet, in your
-              browser.
-            </a>
-          </p>
-        </span>
-      ),
+      status: INSTALL_METAMASK,
     };
   }
 };
@@ -54,35 +46,24 @@ export const getCurrentWalletConnect = async () => {
       if (addressArray.length > 0) {
         return {
           address: addressArray[0],
-          status: "👆🏽 Write a message in the text-field above.",
+          status: WRITE_MESSAGE,
         }
       } else {
         return {
           address: "",
-          status: "🦊 Connect to Metamask using the top right button.",
+          status: CONNECT_TO_METAMASK,
         };
       }
     } catch (err) {
       return {
         address: "",
-        status: "😥 " + err.message,
+        status: showErrorMessage(err.message),
       };
     }
   } else {
     return {
       address: "",
-      status: (
-        <span>
-          <p>
-            {" "}
-            🦊{" "}
-            <a target="_blank" rel="noreferrer" href={`https://metamask.io/download.html`}>
-              You must install Metamask, a virtual Ethereum wallet, in your
-              browser.
-            </a>
-          </p>
-        </span>
-      ),
+      status: INSTALL_METAMASK,
     };
   }
 }
@@ -91,14 +72,14 @@ export const mintNFT = async (url, name, description) => {
   if (url.trim() === '' || name.trim() === '' || description.trim() === '') {
     return {
       success: false,
-      status: "❗Please make sure all fields are completed before minting.",
+      status: EMPTY_FIELDS,
     };
   }
 
   const metadata = {
     name,
     image: url,
-    description
+    description,
   }
 
   const pinataResponse = await pinJSONToIPFS(metadata);
@@ -106,7 +87,7 @@ export const mintNFT = async (url, name, description) => {
   if (!pinataResponse.success) {
     return {
       success: false,
-      status: "😢 Something went wrong while uploading your tokenURI.",
+      status: showErrorMessage("Something went wrong while uploading your tokenURI."),
     }
   }
 
@@ -129,12 +110,12 @@ export const mintNFT = async (url, name, description) => {
 
     return {
       success: true,
-      status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash
+      status: checkOutPolygonTransaction(txHash),
     }
   } catch(error) {
     return {
       success: false,
-      status: "😥 Something went wrong: " + error.message,
+      status: showErrorMessage(error.message),
     }
   }
 }

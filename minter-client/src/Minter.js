@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
+import { CONNECT_TO_METAMASK, INSTALL_METAMASK, WRITE_MESSAGE } from "./constants/statusMessages";
 import { connectWallet, getCurrentWalletConnect, mintNFT } from "./utils/interact"
 
-const Minter = (props) => {
-
-  //State variables
+const Minter = () => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [name, setName] = useState("");
@@ -19,7 +18,22 @@ const Minter = (props) => {
 
     getCurrentWalletConnectEffect();
 
-    addWalletListener();
+    // Add wallet listener
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        console.log(accounts);
+
+        if (accounts.length > 0) {
+          setWallet(accounts[0])
+          setStatus(WRITE_MESSAGE)
+        } else {
+          setWallet("");
+          setStatus(CONNECT_TO_METAMASK);
+        }
+      })
+    } else {
+      setStatus(INSTALL_METAMASK);
+    }
   }, []);
 
   const connectWalletPressed = async () => {
@@ -33,36 +47,9 @@ const Minter = (props) => {
     setStatus(status);
   };
 
-  function addWalletListener() {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
-        console.log(accounts);
-
-        if (accounts.length > 0) {
-          setWallet(accounts[0])
-          setStatus("👆🏽 Write a message in the text-field above.")
-        } else {
-          setWallet("");
-          setStatus("🦊 Connect to Metamask using the top right button.");
-        }
-      })
-    } else {
-      setStatus(
-        <p>
-          {" "}
-          🦊{" "}
-          <a target="_blank" rel="noreferrer" href={`https://metamask.io/download.html`}>
-            You must install Metamask, a virtual Ethereum wallet, in your
-            browser.
-          </a>
-        </p>
-      );
-    }
-  }
-
   return (
     <div className="Minter">
-      <button id="walletButton" onClick={connectWalletPressed}>
+      <button className="walletButton" onClick={connectWalletPressed}>
         {walletAddress.length > 0 ? (
           "Connected: " +
           String(walletAddress).substring(0, 6) +
@@ -73,8 +60,7 @@ const Minter = (props) => {
         )}
       </button>
 
-      <br></br>
-      <h1 id="title">🧙‍♂️ Alchemy NFT Minter</h1>
+      <h1 className="title">🔮 Alchemy NFT Minter</h1>
       <p>
         Simply add your asset's link, name, and description, then press "Mint."
       </p>
@@ -98,10 +84,10 @@ const Minter = (props) => {
           onChange={(event) => setDescription(event.target.value)}
         />
       </form>
-      <button id="mintButton" onClick={onMintPressed}>
+      <button className="mintButton" onClick={onMintPressed}>
         Mint NFT
       </button>
-      <p id="status">
+      <p className="status">
         {status}
       </p>
     </div>

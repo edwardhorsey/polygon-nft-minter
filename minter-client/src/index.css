@@ -1,9 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
+:root {
+  --primary: #45464e;
+}
+
 body {
   margin: 0;
   font-family: 'Rubik';
-  color: #254cdd;
+  color: var(--primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -41,8 +45,8 @@ input:focus {
 button {
   padding: 9px 16px;
   max-height: 40px;
-  border-color: #254cdd;
-  color: #254cdd;
+  border-color: var(--primary);
+  color: var(--primary);
   background-color: white;
   border-radius: 8px;
   align-items: center;
@@ -53,11 +57,11 @@ button {
   cursor:pointer;
 }
 
-#title {
-  padding-top: 32px;
+.title {
+  padding-top: 50px;
 }
 
-#status {
+.status {
   color:red;
 }
 
@@ -68,15 +72,15 @@ button {
   padding: 32px 60px;
 }
 
-#walletButton {
+.walletButton {
   text-align: right;
   float:right;
   margin-bottom: 50px;
   line-height: 16px;
 }
 
-#mintButton {
+.mintButton {
   margin-top: 40px;
-  background-color: #254cdd;
+  background-color: var(--primary);
   color:white;
 }
