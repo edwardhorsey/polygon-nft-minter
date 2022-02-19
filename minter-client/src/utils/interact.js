@@ -1,13 +1,9 @@
-import { checkOutPolygonTransaction, CONNECT_TO_METAMASK, EMPTY_FIELDS, INSTALL_METAMASK, showErrorMessage, WRITE_MESSAGE } from '../constants/statusMessages.js';
+import { ALCHEMY_KEY, CONTRACT_ABI, CONTRACT_ADDRESS } from '../config';
 import { pinJSONToIPFS } from './pinata.js'
+import { createAlchemyWeb3 } from "@alch/alchemy-web3";
+import { checkOutPolygonTransaction, CONNECT_TO_METAMASK, EMPTY_FIELDS, INSTALL_METAMASK, showErrorMessage, WRITE_MESSAGE } from '../constants/statusMessages.js';
 
-require('dotenv').config();
-const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
-const web3 = createAlchemyWeb3(alchemyKey);
-
-const contractABI = require('../contract-abi.json')
-const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS; // https://mumbai.polygonscan.com/address/0x8dB0faC09587829Dbc7Ae51698891c24f37142E0#code
+const web3 = createAlchemyWeb3(ALCHEMY_KEY);
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -93,10 +89,10 @@ export const mintNFT = async (url, name, description) => {
 
   const tokenURI = pinataResponse.pinataUrl;
 
-  window.contract = await new web3.eth.Contract(contractABI, contractAddress);
+  window.contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
   const transactionParameters = {
-    to: contractAddress,
+    to: CONTRACT_ADDRESS,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.mintNFT(window.ethereum.selectedAddress, tokenURI).encodeABI(),
   }
