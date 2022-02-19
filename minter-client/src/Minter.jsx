@@ -1,36 +1,34 @@
-import { useEffect, useState } from "react";
-import { CONNECT_TO_METAMASK, INSTALL_METAMASK, WRITE_MESSAGE } from "./constants/statusMessages";
-import { connectWallet, getCurrentWalletConnect, mintNFT } from "./utils/interact"
+import React, { useEffect, useState } from 'react';
+import { CONNECT_TO_METAMASK, INSTALL_METAMASK, WRITE_MESSAGE } from './constants/statusMessages';
+import { connectWallet, getCurrentWalletConnect, mintNFT } from './utils/interact';
 
-const Minter = () => {
-  const [walletAddress, setWallet] = useState("");
-  const [status, setStatus] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setURL] = useState("");
+function Minter() {
+  const [walletAddress, setWallet] = useState('');
+  const [status, setStatus] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [url, setURL] = useState('');
 
   useEffect(() => {
     const getCurrentWalletConnectEffect = async () => {
-      const {address, status} = await getCurrentWalletConnect();
+      const { address, status } = await getCurrentWalletConnect();
       setWallet(address);
-      setStatus(status);  
-    }
+      setStatus(status);
+    };
 
     getCurrentWalletConnectEffect();
 
     // Add wallet listener
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
-        console.log(accounts);
-
         if (accounts.length > 0) {
-          setWallet(accounts[0])
-          setStatus(WRITE_MESSAGE)
+          setWallet(accounts[0]);
+          setStatus(WRITE_MESSAGE);
         } else {
-          setWallet("");
+          setWallet('');
           setStatus(CONNECT_TO_METAMASK);
         }
-      })
+      });
     } else {
       setStatus(INSTALL_METAMASK);
     }
@@ -49,12 +47,12 @@ const Minter = () => {
 
   return (
     <div className="Minter">
-      <button className="walletButton" onClick={connectWalletPressed}>
+      <button type="button" className="walletButton" onClick={connectWalletPressed}>
         {walletAddress.length > 0 ? (
-          "Connected: " +
-          String(walletAddress).substring(0, 6) +
-          "..." +
-          String(walletAddress).substring(38)
+          `Connected: ${
+            String(walletAddress).substring(0, 6)
+          }...${
+            String(walletAddress).substring(38)}`
         ) : (
           <span>Connect Wallet</span>
         )}
@@ -62,7 +60,8 @@ const Minter = () => {
 
       <h1 className="title">🔮 Alchemy NFT Minter</h1>
       <p>
-        Simply add your asset's link, name, and description, then press "Mint."
+        Simply add your asset&apos;s link, name, and description,
+        then press &quot;Mint.&quot;
       </p>
       <form>
         <h2>🖼 Link to asset: </h2>
@@ -84,7 +83,7 @@ const Minter = () => {
           onChange={(event) => setDescription(event.target.value)}
         />
       </form>
-      <button className="mintButton" onClick={onMintPressed}>
+      <button type="button" className="mintButton" onClick={onMintPressed}>
         Mint NFT
       </button>
       <p className="status">
@@ -92,6 +91,6 @@ const Minter = () => {
       </p>
     </div>
   );
-};
+}
 
 export default Minter;
