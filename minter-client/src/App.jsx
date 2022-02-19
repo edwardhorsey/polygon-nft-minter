@@ -1,10 +1,11 @@
+import React from 'react';
 import './App.css';
-import Minter from './Minter'
+import Minter from './Minter';
 
 function App() {
   return (
     <div className="App">
-      <Minter></Minter>
+      <Minter />
     </div>
   );
 }
