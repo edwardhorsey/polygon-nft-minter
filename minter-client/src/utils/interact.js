@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ALCHEMY_KEY, CONTRACT_ABI, CONTRACT_ADDRESS } from '../config';
 import { pinJSONToIPFS } from './pinata';
@@ -122,4 +123,25 @@ export const mintNFT = async (url, name, description) => {
       status: showErrorMessage(error.message),
     };
   }
+};
+
+export const getNfts = async (ownerAddr) => {
+  const getNfts = await web3.alchemy.getNfts({
+    owner: ownerAddr,
+  });
+
+  console.log({ getNfts });
+
+  return getNfts;
+};
+
+export const getNftMetadata = async (nft) => {
+  const getNftMetadataResponse = await web3.alchemy.getNftMetadata({
+    contractAddress: nft.contract.address,
+    tokenId: nft.id.tokenId,
+  });
+
+  console.log({ getNftMetadataResponse });
+
+  return getNftMetadataResponse;
 };

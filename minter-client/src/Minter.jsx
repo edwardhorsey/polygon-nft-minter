@@ -1,6 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { CONNECT_TO_METAMASK, INSTALL_METAMASK, WRITE_MESSAGE } from './constants/statusMessages';
-import { connectWallet, getCurrentWalletConnect, mintNFT } from './utils/interact';
+import {
+  connectWallet,
+  getCurrentWalletConnect,
+  mintNFT,
+  getNfts,
+  getNftMetadata,
+} from './utils/interact';
+
+// eslint-disable-next-line react/prop-types
+function Nft({ nft }) {
+  const [metaData, setMetaData] = useState();
+
+  useEffect(() => {
+    const getNftMetadataEffect = async () => {
+      const metaDataResponse = await getNftMetadata(nft);
+
+      setMetaData(metaDataResponse);
+    };
+
+    getNftMetadataEffect();
+  }, []);
+
+  return (
+    <p>{JSON.stringify(metaData)}</p>
+  );
+}
 
 function Minter() {
   const [walletAddress, setWallet] = useState('');
@@ -8,6 +33,7 @@ function Minter() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [url, setURL] = useState('');
+  const [nfts, setNfts] = useState({});
 
   useEffect(() => {
     const getCurrentWalletConnectEffect = async () => {
@@ -33,6 +59,18 @@ function Minter() {
       setStatus(INSTALL_METAMASK);
     }
   }, []);
+
+  useEffect(() => {
+    if (!Object.keys(nfts).length && walletAddress) {
+      const run = async () => {
+        const nfts = await getNfts(walletAddress);
+
+        setNfts(nfts);
+      };
+
+      run();
+    }
+  }, [walletAddress]);
 
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
